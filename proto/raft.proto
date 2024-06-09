@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package rpc;
+
+option go_package = "./pb";
+
+message Empty {
+
+}
+
+message Entry {
+  string command = 1;
+  int64 term = 2;
+}
+
+message Address {
+  string IP = 1;
+  int64 port = 2;
+}
+
+message AppendEntriesArguments {
+  int64 term = 1;
+  Address leaderAddress = 2;
+  int64 prevLogIndex = 3;
+  int64 prevLogTerm = 4;
+  repeated Entry entries = 5;
+  int64 leaderCommit = 6;
+}
+
+message AppendEntriesResults {
+  int64 term = 1;
+  bool success = 2;
+}
+
+message RequestVoteArguments {
+  int64 term = 1;
+  Address candidateAddress = 2;
+  int64 lastLogIndex = 3;
+  int64 lastLogTerm = 4;
+}
+
+message ExecuteCommandArguments {
+  string command = 1;
+}
+
+message ExecuteCommandResults {
+  bool success = 1;
+  string message = 2;
+  Address address = 3;
+}
+
+message RequestVoteResults {
+  int64 term = 1;
+  bool voteGranted = 2;
+}
+
+message JoinArguments {
+  Address address = 1;
+  bool internal = 2;
+}
+
+message JoinResults {
+  bool success = 1;
+  Address address = 2;
+  int64 lastApplied = 3;
+  repeated Entry entries = 4;
+  repeated Address addressList = 5;
+}
+
+message RequestLogResult {
+  repeated Entry entries = 1;
+}
+
+service Raft {
+  rpc AppendEntries(AppendEntriesArguments) returns (AppendEntriesResults);
+  rpc RequestVote(RequestVoteArguments) returns (RequestVoteResults);
+  rpc ExecuteCommand(ExecuteCommandArguments) returns (ExecuteCommandResults);
+  rpc Join(JoinArguments) returns (JoinResults);
+  rpc RequestLog(Empty) returns (RequestLogResult);
+}
