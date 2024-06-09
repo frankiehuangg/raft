@@ -36,7 +36,7 @@
       const unmarshal: Entry[] = JSON.parse(data);
 
       for (let i = unmarshal.length - 1; i >= 0; i--) {
-        data = `    ${unmarshal[i].term} - ${unmarshal[i].command}\n`;
+        data = `- ${unmarshal[i].command}\n`;
         output.unshift(data);
       }
 
